@@ -14,57 +14,6 @@
     10.162
 ```
 
-All together now ....
-
-VLANS: VTP/DHCP-L3Switch acts as VTP server for the VTP domain lu2, all other switches are VTP clients.
-
-On each switch use port 1 Vlan 10 Kids, port 2 Vlan 20 susu, port 3 Vlan 30 unprivileged, port 4 Vlan 40 restricted, native Vlan 99 management, port 13 Vlan 50 server.
-Configure trunks according to the topology, native vlan 99.
-Internal Network DHCP: VTP/DHCP-L3Switch acts as DHCP Server and Inte-VLAN router for the intranet.
-Create a DHCP Pool with the name VLAN and the Vlan Id (eg. ip dhcp pool VLAN10 for Vlan 10) for each Vlan. 
-Subnet 10.162.0.0/8 with a /24 mask and use 10.162.Vlanid.0/24 for each VLAN as network address. Use the lowest ip in each subnet as standard gateway. Make sure that this addresse will not used by DHCP on the pc's!
-Create a SVI for each VLAN except Vlan40 and 99, with the following ip: 10.162.Vlanid.1/24 
-The servers in Vlan 50 get static ip addresses (first and last ip in their subnet).
-As domain name use htl.com
-Create a default route pointing to the BorderRouter. Configure the Intranet Server as https and DNS server (for dmz.acme.com, intranet.acme.com, wgs2.acme.com, wgs3.acme.com). Configure it as DNS server on all Pcs, routers ... necessary.
-
-Switches A-F: configure the "double-trunks" with etherchannel to double the available bandwidth.
-
-Configure STP 802.1D
-Use show spanning-tree to check for the root bridge in each vlan
-Change the root bridges: SW1 for VLAN 10, SW2 for VLAN 20, SW3 for VLAN 30
-
-BorderRouter: routing, NAT and ACLs 
-Create subinterfaces on the trunk for each subnet except Vlan40 and Vlan99. Use the highest available ip in each subnet as ip address. Make sure, these addresse will not be used by DHCP on the pc's!
-DMZ Network: 10.162.100.0/24, Router and Server IP static. 
-create a default route into the ISP Cloud !
-For the ISP connection use 193.70.162.252/29
-Configure NAT Overload on the serial interface, to mask internal adresses with one of the unused ISP addresses 
-Use EIGRP 101 as routing protocol.
-Configure the Company Web Server as https and DNS server (for wan.internet.com). Configure it as DNS server on all Pcs, routers .. necessary.
-
-WAN: Use EIGRP 101 as routing protocol.
-Click on the Peer Cloud: Set Connection Type to Outgoing, configure Peer Network Name Peerx where x is a unique number between 0 an 11 (talk to your collegues)!
-Configure the appropriate Router0 link with the ip 10.x.5.2/24. Peer0 use 10.1.5.2 instead!
-Connect with the password cisco!
-Create a default route to the Internet-cloud and redistribute it.
-Configure the WAN Web Server and the router interface with ip's from the network 193.170.149.0/24. 
-Configure eigrp ...
-
-Test: Each PC from Vlans 10,20,50 and 30 should be able to ping each other PC in this Vlans.
-No Pc fromt the Vlans 40 and 99 should be reachable from outside their vlans. 
-Use the browser on the Pcs to show the homepages on all https servers using their URLs.
-Ping your collegues DMZ https servers an try showing their home pages.
-
-submit your work to moodle.htlwrn.ac.at!
-ACLS (Border Router and/or VTP/DHCP-L3Switch):
-Pc's from every Vlan could connect to the Intranet/Workgroup-Servers (Vlan50)
-PC's from every Vlan except Vlans 10 and 40 are allowed to the DMZ
-Only Vlans 20, 30 and 40 are allowed to the WAN.
-Traffic from the WAN is only allowed to the DMZ Websserver (http,https,ssh).
-
-© Mag. W. Cyrmon 2017
-
 ## Anleitung
 
 1. Replace variables
